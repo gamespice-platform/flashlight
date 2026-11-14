@@ -1,15 +1,20 @@
 # dot-flashlight
 
-A player-carried flashlight for TMC's **Dot** collection: a spot light on the player's eye, a toggle, an optional battery, state the server owns, and cheap beams for everyone else. It depends only on dot-core.
+A flashlight the player carries, for Godot 4.7+. It gives you a spot light on the player's eye, a toggle key, an optional battery, state the server owns, and cheap beams for every other player. Part of the [dot-*](https://github.com/modcommunity) family. It needs only [dot-core](https://github.com/modcommunity/dot-core).
 
-Why not dot-lighting: that addon is a world's lighting as a document. A flashlight is carried, switched and replicated, so it is its own small addon.
+dot-lighting describes a world's lighting as a document. A flashlight is carried, switched and replicated, so it is a small addon of its own.
 
-## Use
+## Install
+
+1. Copy `addons/dot_flashlight/` and `addons/dot_core/` into your project.
+2. Enable dot-flashlight in *Project > Project Settings > Plugins*.
+
+## Quick start
 
 ```gdscript
 var fl := DotFlashlight.new()
 fl.config = cfg                                  # a DotFlashlightConfig
-fl.host = DotNodeRef.of_path(^"Camera")          # the eye; empty is the parent
+fl.host = DotNodeRef.of_path(^"Camera")          # the eye; empty means the parent
 fl.authoritative = is_server_or_offline
 add_child(fl)
 fl.begin_map(map_id, ambient_energy, mood)       # allowed here? starts on a dark map?
@@ -24,20 +29,57 @@ crowd.set_lit(key, player.flashlight)
 crowd.place(key, player.eye_position(), player.look_direction())
 ```
 
-## Configuration
+## Settings
 
-Every number is a `DotFlashlightConfig` field (range, angle, energy, colour, shadows, battery drain and recharge, key, default state, allowed maps, how many other beams are drawn and shadowed). Layers, weakest first: defaults, `cfg/addon/dot_flashlight/*.yml`, the game's, the operator's, `DOT_FLASHLIGHT_*`, `--flashlight-*`. A game that wants cvars and the workbench binds the config with dot-game's `DotGameConfigBinder` (`profile_kind = "flashlight"`), which exposes every field as a cvar and a profile set.
+Every number is a field on `DotFlashlightConfig`. The values below are defaults, and the ranges are inspector slider limits, not enforced caps. Set the property from code or a config file to go beyond them.
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| `enabled` | true | Turns the flashlight on or off for the game. |
+| `range_m` | 20.0 | Beam range in metres. |
+| `angle` | 36.0 | Beam angle in degrees. |
+| `energy` | 3.2 | Brightness. |
+| `colour` | `#ffedcc` | Beam colour. |
+| `shadows` | true | The local beam casts shadows. |
+| `shadows_on_web` | false | Allow shadows in a browser or on a phone. |
+| `shadow_beams` | 2 | How many of the nearest other beams cast shadows. |
+| `remote_beams` | 24 | How many of the nearest other beams are drawn. |
+| `remote_range` | 45.0 | How far away another player's beam is still drawn. |
+| `remote_energy_scale` | 0.7 | Brightness of other players' beams. |
+| `battery` | false | Turns the battery on. |
+| `battery_seconds` | 120.0 | How long a full battery lasts. |
+| `recharge_seconds` | 60.0 | How long a recharge takes. |
+| `key` | `F` | The default key. The input action is `flashlight`. |
+| `allowed_maps` | empty | Maps where the flashlight is allowed. |
+
+The config has more fields for the flicker, the restart charge, the dark-map rules and the click sounds. They are in `addons/dot_flashlight/core/dot_flashlight_config.gd`.
+
+Layers, weakest first: the defaults, `cfg/addon/dot_flashlight/*.yml`, the game's files, the operator's files, `DOT_FLASHLIGHT_*` environment variables, then `--flashlight-*` flags. A game that wants cvars binds the config with dot-game's `DotGameConfigBinder` (`profile_kind = "flashlight"`), which exposes every field as a cvar and a profile set.
 
 ## Switch sounds
 
-Set `audio` (a `DotNodeRef` to a dot-audio `DotAudioManager`) on `DotFlashlight` and on `DotFlashlightCrowd`; the light then clicks in 3D where it is, the crowd where each other player stands. The catalogue needs `flashlight_on` and `flashlight_off`: `DotAudioStock.add_to(catalogue)` or `DotAudioStock.flashlight_defs()` adds the stock ones (synthesised, CC0, 0.12 s, about 7 to 9 dB below a footstep). To replace them, either add your own defs with those ids before the stock is added (`add_to` skips ids already present), or point `click_on` / `click_off` at other catalogue ids. `click_volume` (0 is silent) and `click_pitch_jitter` tune them, and the `clicked(on)` signal is there for a game that plays its own sound. Without `audio`, or with an id the catalogue lacks, the light is silent.
+Set `audio` (a `DotNodeRef` to a dot-audio `DotAudioManager`) on both `DotFlashlight` and `DotFlashlightCrowd`. The light then clicks in 3D where it is, and other players' lights click where they stand. The catalogue needs `flashlight_on` and `flashlight_off`. `DotAudioStock.add_to(catalogue)` adds the stock ones, which are synthesised and CC0.
+
+To replace them, add your own defs with those ids before the stock is added (`add_to` skips ids already present), or point `click_on` and `click_off` at other catalogue ids. `click_volume` (0 is silent) and `click_pitch_jitter` tune them. The `clicked(on)` signal is there for a game that plays its own sound. Without `audio`, or with an id the catalogue lacks, the light is silent.
 
 ## Cost
 
-Only the local beam and the nearest `shadow_beams` others cast shadows, only the nearest `remote_beams` inside `remote_range` are drawn, and the ranking runs four times a second. Shadows are off by default in a browser or on a phone (`shadows_on_web`).
+Only the local beam and the nearest `shadow_beams` others cast shadows. Only the nearest `remote_beams` inside `remote_range` are drawn. The ranking runs four times a second (`rank_interval` on the crowd).
 
-## Tests
+## Test
 
-Import, parse every script, then run `examples/flashlight_selftest.tscn` headless. `tools/screenshot.sh <out.png>` renders `examples/flashlight_demo.tscn`.
+```bash
+godot --headless --path . --import
+godot --headless --path . res://examples/flashlight_selftest.tscn
+tools/screenshot.sh out.png      # renders examples/flashlight_demo.tscn
+```
 
-MIT licensed, see LICENSE.
+The self-test is offline and exits non-zero on any failure.
+
+## Status
+
+Built and maintained with Claude Code. The test suites pass, but little of this has been in front of real players yet. Please report rough edges by opening an issue.
+
+## Licence
+
+MIT. See [LICENSE](LICENSE). Only the TMC back-end web infrastructure is not open source.
