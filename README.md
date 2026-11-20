@@ -1,4 +1,4 @@
-[![Flashlight - GameSpice addon](docs/banner.png)](https://moddingcommunity.com/a/271-dot-flashlight)
+[![Flashlight - GameSpice addon](docs/banner.png)](https://moddingcommunity.com/a/114-gs-flashlight)
 
 A flashlight the player carries, for Godot 4.7+. It gives you a spot light on the player's eye, a toggle key, an optional battery, state the server owns, and cheap beams for every other player. Part of the [dot-*](https://github.com/gamespice-platform) family. It needs only [dot-core](https://github.com/gamespice-platform/core).
 
