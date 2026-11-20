@@ -1,7 +1,7 @@
 @tool
 extends EditorPlugin
 
-## Editor entry point for dot-flashlight. No autoloads: a flashlight belongs to a player, and a process that runs a server and a client needs two of everything.
+## Editor entry point for GameSpice Flashlight. No autoloads: a flashlight belongs to a player, and a process that runs a server and a client needs two of everything.
 
 
 func _enter_tree() -> void:

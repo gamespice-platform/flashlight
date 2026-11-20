@@ -1,8 +1,8 @@
 [![Flashlight - GameSpice addon](docs/banner.png)](https://moddingcommunity.com/a/114-gs-flashlight)
 
-A flashlight the player carries, for Godot 4.7+. It gives you a spot light on the player's eye, a toggle key, an optional battery, state the server owns, and cheap beams for every other player. Part of the [dot-*](https://github.com/gamespice-platform) family. It needs only [dot-core](https://github.com/gamespice-platform/core).
+A flashlight the player carries, for Godot 4.7+. It gives you a spot light on the player's eye, a toggle key, an optional battery, state the server owns, and cheap beams for every other player. Part of the [GameSpice](https://github.com/gamespice-platform) family. It needs only [GameSpice Core](https://github.com/gamespice-platform/core).
 
-dot-lighting describes a world's lighting as a document. A flashlight is carried, switched and replicated, so it is a small addon of its own.
+GameSpice Lighting describes a world's lighting as a document. A flashlight is carried, switched and replicated, so it is a small addon of its own.
 
 ## Install
 
@@ -54,11 +54,11 @@ Every number is a field on `DotFlashlightConfig`. The values below are defaults,
 
 The config has more fields for the flicker, the restart charge, the dark-map rules and the click sounds. They are in `addons/dot_flashlight/core/dot_flashlight_config.gd`.
 
-Layers, weakest first: the defaults, `cfg/addon/dot_flashlight/*.yml`, the game's files, the operator's files, `DOT_FLASHLIGHT_*` environment variables, then `--flashlight-*` flags. A game that wants cvars binds the config with dot-game's `DotGameConfigBinder` (`profile_kind = "flashlight"`), which exposes every field as a cvar and a profile set.
+Layers, weakest first: the defaults, `cfg/addon/dot_flashlight/*.yml`, the game's files, the operator's files, `DOT_FLASHLIGHT_*` environment variables, then `--flashlight-*` flags. A game that wants cvars binds the config with GameSpice Game's `DotGameConfigBinder` (`profile_kind = "flashlight"`), which exposes every field as a cvar and a profile set.
 
 ## Switch sounds
 
-Set `audio` (a `DotNodeRef` to a dot-audio `DotAudioManager`) on both `DotFlashlight` and `DotFlashlightCrowd`. The light then clicks in 3D where it is, and other players' lights click where they stand. The catalogue needs `flashlight_on` and `flashlight_off`. `DotAudioStock.add_to(catalogue)` adds the stock ones, which are synthesised and CC0.
+Set `audio` (a `DotNodeRef` to a GameSpice Audio `DotAudioManager`) on both `DotFlashlight` and `DotFlashlightCrowd`. The light then clicks in 3D where it is, and other players' lights click where they stand. The catalogue needs `flashlight_on` and `flashlight_off`. `DotAudioStock.add_to(catalogue)` adds the stock ones, which are synthesised and CC0.
 
 To replace them, add your own defs with those ids before the stock is added (`add_to` skips ids already present), or point `click_on` and `click_off` at other catalogue ids. `click_volume` (0 is silent) and `click_pitch_jitter` tune them. The `clicked(on)` signal is there for a game that plays its own sound. Without `audio`, or with an id the catalogue lacks, the light is silent.
 

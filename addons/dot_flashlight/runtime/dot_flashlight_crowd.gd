@@ -8,7 +8,7 @@ extends Node3D
 @export var config: DotFlashlightConfig
 ## How often the nearest beams are ranked, in seconds.
 @export var rank_interval: float = 0.25
-## Optional dot-audio manager: another player's switch is heard in 3D where they stand.
+## Optional GameSpice Audio manager: another player's switch is heard in 3D where they stand.
 @export var audio: DotNodeRef
 
 var _beams: Dictionary = {}

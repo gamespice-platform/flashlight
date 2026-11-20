@@ -19,7 +19,7 @@ const CHANNEL := "flashlight"
 @export var config: DotFlashlightConfig
 ## The eye or camera the beam is mounted on; empty is this node's parent.
 @export var host: DotNodeRef
-## Optional dot-audio manager for the switch clicks, played in 3D at the beam.
+## Optional GameSpice Audio manager for the switch clicks, played in 3D at the beam.
 @export var audio: DotNodeRef
 ## Input action that toggles; created from `config.key` only if the project has no such action.
 @export var action: StringName = &"flashlight"

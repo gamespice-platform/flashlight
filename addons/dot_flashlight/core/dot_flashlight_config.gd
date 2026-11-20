@@ -66,7 +66,7 @@ const START_DARK := 2
 @export var dark_moods: PackedStringArray = PackedStringArray(["interior_horror"])
 
 @export_group("Sound")
-## dot-audio catalogue ids for the switch clicks; empty is silent.
+## GameSpice Audio catalogue ids for the switch clicks; empty is silent.
 @export var click_on: String = "flashlight_on"
 @export var click_off: String = "flashlight_off"
 ## Loudness of a click, 0 to 1; 0 is a silent light. The stock clicks are already quieter than a footstep.
@@ -98,7 +98,7 @@ func local_shadows() -> bool:
 	return shadows and (shadows_on_web or not (DotPlatform.is_web() or DotPlatform.is_mobile()))
 
 
-## The `flashlight` profile schema (the shape of dot-profile's field()), read from the exports so it cannot drift; dot-profile's profile_check finds it here.
+## The `flashlight` profile schema (the shape of GameSpice Profile's field()), read from the exports so it cannot drift; GameSpice Profile's profile_check finds it here.
 static func schema() -> Array:
 	var out: Array = []
 	var cfg := DotFlashlightConfig.new()
@@ -125,7 +125,7 @@ static func schema() -> Array:
 	return out
 
 
-## Kind to schema for dot-profile's profile_check (a game's `cfg/game/<game>/flashlight/game.yml`).
+## Kind to schema for GameSpice Profile's profile_check (a game's `cfg/game/<game>/flashlight/game.yml`).
 static func profile_schemas() -> Dictionary:
 	return {"flashlight": {"schema": schema(), "children": {}}}
 
