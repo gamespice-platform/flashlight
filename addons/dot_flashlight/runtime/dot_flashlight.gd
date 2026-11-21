@@ -1,4 +1,4 @@
-class_name DotFlashlight
+class_name GSFlashlight
 extends Node
 
 ## One player's flashlight: the on/off state, the battery and the local beam.
@@ -16,11 +16,11 @@ signal clicked(on: bool)
 
 const CHANNEL := "flashlight"
 
-@export var config: DotFlashlightConfig
+@export var config: GSFlashlightConfig
 ## The eye or camera the beam is mounted on; empty is this node's parent.
-@export var host: DotNodeRef
+@export var host: GSNodeRef
 ## Optional GameSpice Audio manager for the switch clicks, played in 3D at the beam.
-@export var audio: DotNodeRef
+@export var audio: GSNodeRef
 ## Input action that toggles; created from `config.key` only if the project has no such action.
 @export var action: StringName = &"flashlight"
 ## Whether this node reads its action itself; a game with its own key table turns it off and calls [method toggle].
@@ -43,12 +43,12 @@ var _time := 0.0
 
 func _ready() -> void:
 	if config == null:
-		config = DotFlashlightConfig.new()
+		config = GSFlashlightConfig.new()
 	if handle_input:
 		_ensure_action()
 	var mount := (host.resolve_or_null(self, CHANNEL) if host != null else get_parent()) as Node3D
 	if mount != null:
-		beam = DotFlashlightBeam.make(config, config.local_shadows())
+		beam = GSFlashlightBeam.make(config, config.local_shadows())
 		mount.add_child(beam)
 		beam.position = beam_offset
 		beam.visible = on
@@ -58,16 +58,16 @@ func _ready() -> void:
 
 ## Starts a map: whether the light works there and whether it begins on.
 func begin_map(map_id: String, ambient: float, mood: String = "") -> void:
-	allowed = DotFlashlightRules.allowed_on(config, map_id)
+	allowed = GSFlashlightRules.allowed_on(config, map_id)
 	charge = 1.0
-	_apply(DotFlashlightRules.start_on(config, map_id, ambient, mood), false)
-	DotLog.debug(CHANNEL, "map", {"map": map_id, "allowed": allowed, "on": on})
+	_apply(GSFlashlightRules.start_on(config, map_id, ambient, mood), false)
+	GSLog.debug(CHANNEL, "map", {"map": map_id, "allowed": allowed, "on": on})
 
 
 ## Re-applies the config to the beam, after a cvar or the server changed it.
 func refresh() -> void:
 	if beam != null:
-		DotFlashlightBeam.style(beam, config, config.local_shadows())
+		GSFlashlightBeam.style(beam, config, config.local_shadows())
 
 
 ## Flips the light. Returns whether anything was done.
@@ -79,7 +79,7 @@ func toggle() -> bool:
 func request(want: bool) -> bool:
 	if not allowed or not config.enabled or want == on:
 		return false
-	if want and not DotFlashlightRules.can_light(config, charge):
+	if want and not GSFlashlightRules.can_light(config, charge):
 		return false
 	if not authoritative:
 		switch_requested.emit(want)
@@ -105,12 +105,12 @@ func describe() -> Dictionary:
 func _process(delta: float) -> void:
 	_time += delta
 	if authoritative and config.battery:
-		charge = DotFlashlightRules.step_charge(config, charge, on, delta)
+		charge = GSFlashlightRules.step_charge(config, charge, on, delta)
 		if on and charge <= 0.0:
 			_apply(false, true)
 			depleted.emit()
 	if beam != null and on:
-		beam.light_energy = config.energy * energy_scale * DotFlashlightRules.flicker(config, charge, _time)
+		beam.light_energy = config.energy * energy_scale * GSFlashlightRules.flicker(config, charge, _time)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -132,7 +132,7 @@ func _apply(next: bool, click: bool) -> void:
 func _click(now_on: bool) -> void:
 	clicked.emit(now_on)
 	var at := beam.global_position if beam != null and beam.is_inside_tree() else Vector3.ZERO
-	DotFlashlightClick.play(_audio, config, now_on, at)
+	GSFlashlightClick.play(_audio, config, now_on, at)
 
 
 func _ensure_action() -> void:

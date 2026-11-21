@@ -12,16 +12,16 @@ GameSpice Lighting describes a world's lighting as a document. A flashlight is c
 ## Quick start
 
 ```gdscript
-var fl := DotFlashlight.new()
-fl.config = cfg                                  # a DotFlashlightConfig
-fl.host = DotNodeRef.of_path(^"Camera")          # the eye; empty means the parent
+var fl := GSFlashlight.new()
+fl.config = cfg                                  # a GSFlashlightConfig
+fl.host = GSNodeRef.of_path(^"Camera")          # the eye; empty means the parent
 fl.authoritative = is_server_or_offline
 add_child(fl)
 fl.begin_map(map_id, ambient_energy, mood)       # allowed here? starts on a dark map?
 fl.switch_requested.connect(send_to_server)      # a client only
 fl.apply_state(server_state)                     # from the server; fl.state() is what to replicate
 
-var crowd := DotFlashlightCrowd.new()            # everyone else
+var crowd := GSFlashlightCrowd.new()            # everyone else
 crowd.config = cfg
 add_child(crowd)
 crowd.set_viewer(camera.global_position)
@@ -31,7 +31,7 @@ crowd.place(key, player.eye_position(), player.look_direction())
 
 ## Settings
 
-Every number is a field on `DotFlashlightConfig`. The values below are defaults, and the ranges are inspector slider limits, not enforced caps. Set the property from code or a config file to go beyond them.
+Every number is a field on `GSFlashlightConfig`. The values below are defaults, and the ranges are inspector slider limits, not enforced caps. Set the property from code or a config file to go beyond them.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
@@ -54,11 +54,11 @@ Every number is a field on `DotFlashlightConfig`. The values below are defaults,
 
 The config has more fields for the flicker, the restart charge, the dark-map rules and the click sounds. They are in `addons/dot_flashlight/core/dot_flashlight_config.gd`.
 
-Layers, weakest first: the defaults, `cfg/addon/dot_flashlight/*.yml`, the game's files, the operator's files, `DOT_FLASHLIGHT_*` environment variables, then `--flashlight-*` flags. A game that wants cvars binds the config with GameSpice Game's `DotGameConfigBinder` (`profile_kind = "flashlight"`), which exposes every field as a cvar and a profile set.
+Layers, weakest first: the defaults, `cfg/addon/dot_flashlight/*.yml`, the game's files, the operator's files, `DOT_FLASHLIGHT_*` environment variables, then `--flashlight-*` flags. A game that wants cvars binds the config with GameSpice Game's `GSGameConfigBinder` (`profile_kind = "flashlight"`), which exposes every field as a cvar and a profile set.
 
 ## Switch sounds
 
-Set `audio` (a `DotNodeRef` to a GameSpice Audio `DotAudioManager`) on both `DotFlashlight` and `DotFlashlightCrowd`. The light then clicks in 3D where it is, and other players' lights click where they stand. The catalogue needs `flashlight_on` and `flashlight_off`. `DotAudioStock.add_to(catalogue)` adds the stock ones, which are synthesised and CC0.
+Set `audio` (a `GSNodeRef` to a GameSpice Audio `GSAudioManager`) on both `GSFlashlight` and `GSFlashlightCrowd`. The light then clicks in 3D where it is, and other players' lights click where they stand. The catalogue needs `flashlight_on` and `flashlight_off`. `GSAudioStock.add_to(catalogue)` adds the stock ones, which are synthesised and CC0.
 
 To replace them, add your own defs with those ids before the stock is added (`add_to` skips ids already present), or point `click_on` and `click_off` at other catalogue ids. `click_volume` (0 is silent) and `click_pitch_jitter` tune them. The `clicked(on)` signal is there for a game that plays its own sound. Without `audio`, or with an id the catalogue lacks, the light is silent.
 

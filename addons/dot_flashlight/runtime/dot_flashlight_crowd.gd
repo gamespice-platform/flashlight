@@ -1,15 +1,15 @@
-class_name DotFlashlightCrowd
+class_name GSFlashlightCrowd
 extends Node3D
 
 ## The beams of everyone else, cheap for a crowd.
 ##
 ## One SpotLight3D per lit player, placed by the game each frame from that player's eye and look direction. Only the nearest `shadow_beams` to the viewer cast shadows, only the nearest `remote_beams` are drawn, and the ranking runs a few times a second, not per frame.
 
-@export var config: DotFlashlightConfig
+@export var config: GSFlashlightConfig
 ## How often the nearest beams are ranked, in seconds.
 @export var rank_interval: float = 0.25
 ## Optional GameSpice Audio manager: another player's switch is heard in 3D where they stand.
-@export var audio: DotNodeRef
+@export var audio: GSNodeRef
 
 var _beams: Dictionary = {}
 var _lit: Dictionary = {}
@@ -23,7 +23,7 @@ var _drawn_count := 0
 
 func _ready() -> void:
 	if config == null:
-		config = DotFlashlightConfig.new()
+		config = GSFlashlightConfig.new()
 	if audio != null:
 		_audio = audio.resolve_or_null(self, "flashlight")
 
@@ -31,10 +31,10 @@ func _ready() -> void:
 ## Who is lit. A player never seen is created on first call. A change in a player already known clicks at their last placed origin; the first sighting is silent, so joining a server does not click for everyone.
 func set_lit(key: Variant, lit: bool) -> void:
 	if _lit.has(key) and bool(_lit[key]) != lit:
-		DotFlashlightClick.play(_audio, config, lit, _origins.get(key, Vector3.ZERO))
+		GSFlashlightClick.play(_audio, config, lit, _origins.get(key, Vector3.ZERO))
 	_lit[key] = lit
 	if lit and not _beams.has(key):
-		var beam := DotFlashlightBeam.make(config, false, config.remote_energy_scale)
+		var beam := GSFlashlightBeam.make(config, false, config.remote_energy_scale)
 		beam.visible = false
 		add_child(beam)
 		_beams[key] = beam
@@ -69,7 +69,7 @@ func retain(keys: Array) -> void:
 ## Re-applies the config to every beam.
 func refresh() -> void:
 	for beam: SpotLight3D in _beams.values():
-		DotFlashlightBeam.style(beam, config, false, config.remote_energy_scale)
+		GSFlashlightBeam.style(beam, config, false, config.remote_energy_scale)
 
 
 ## Where the viewer is (their camera), for the ranking.
@@ -100,8 +100,8 @@ func rank() -> void:
 			if d <= config.remote_range:
 				_rank_keys.append(key)
 				_rank_dist.append(d)
-	var shown := DotFlashlightRules.nearest(_rank_dist, config.remote_beams)
-	var shadowed := DotFlashlightRules.nearest(_rank_dist, config.shadow_beams) if config.local_shadows() else PackedInt32Array()
+	var shown := GSFlashlightRules.nearest(_rank_dist, config.remote_beams)
+	var shadowed := GSFlashlightRules.nearest(_rank_dist, config.shadow_beams) if config.local_shadows() else PackedInt32Array()
 	_rank_visible.clear()
 	for i in shown:
 		var beam: SpotLight3D = _beams[_rank_keys[i]]

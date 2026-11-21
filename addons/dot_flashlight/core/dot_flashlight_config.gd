@@ -1,7 +1,7 @@
-class_name DotFlashlightConfig
-extends DotConfig
+class_name GSFlashlightConfig
+extends GSConfig
 
-## Every tunable of a flashlight. Exposed like any config: a game binds it with DotGameConfigBinder (kind `flashlight`) for cvars and the workbench; `cfg/addon/dot_flashlight/*.yml`, `DOT_FLASHLIGHT_*` and `--flashlight-*` layer over these defaults.
+## Every tunable of a flashlight. Exposed like any config: a game binds it with GSGameConfigBinder (kind `flashlight`) for cvars and the workbench; `cfg/addon/dot_flashlight/*.yml`, `DOT_FLASHLIGHT_*` and `--flashlight-*` layer over these defaults.
 
 const ADDON := "dot-flashlight"
 const START_OFF := 0
@@ -83,10 +83,10 @@ func cli_prefix() -> String:
 	return "--flashlight-"
 
 
-func validate() -> DotResult:
+func validate() -> GSResult:
 	if not colour.begins_with("#") or not Color.html_is_valid(colour):
-		return DotResult.fail(DotError.CODE_INVALID, "flashlight colour '%s' is not #rrggbb" % colour)
-	return DotResult.success(self)
+		return GSResult.fail(GSError.CODE_INVALID, "flashlight colour '%s' is not #rrggbb" % colour)
+	return GSResult.success(self)
 
 
 func beam_colour() -> Color:
@@ -95,13 +95,13 @@ func beam_colour() -> Color:
 
 ## Whether a beam may cast shadows on this machine: the cvar and the platform agree.
 func local_shadows() -> bool:
-	return shadows and (shadows_on_web or not (DotPlatform.is_web() or DotPlatform.is_mobile()))
+	return shadows and (shadows_on_web or not (GSPlatform.is_web() or GSPlatform.is_mobile()))
 
 
 ## The `flashlight` profile schema (the shape of GameSpice Profile's field()), read from the exports so it cannot drift; GameSpice Profile's profile_check finds it here.
 static func schema() -> Array:
 	var out: Array = []
-	var cfg := DotFlashlightConfig.new()
+	var cfg := GSFlashlightConfig.new()
 	for prop: Dictionary in cfg.get_property_list():
 		if not (int(prop["usage"]) & PROPERTY_USAGE_SCRIPT_VARIABLE) or not (int(prop["usage"]) & PROPERTY_USAGE_EDITOR):
 			continue
@@ -131,9 +131,9 @@ static func profile_schemas() -> Dictionary:
 
 
 ## Defaults, then `cfg/addon/dot_flashlight/*.yml` and the game tier, then environment and command line.
-static func from_files() -> DotResult:
-	var cfg := DotFlashlightConfig.new()
-	var files := DotAddonConfig.load_dir(ADDON)
+static func from_files() -> GSResult:
+	var cfg := GSFlashlightConfig.new()
+	var files := GSAddonConfig.load_dir(ADDON)
 	if not files.ok:
 		return files
 	cfg.apply_dictionary(files.value as Dictionary, "yml")

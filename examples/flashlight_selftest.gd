@@ -29,9 +29,9 @@ func _ready() -> void:
 
 
 func _config() -> void:
-	var c := DotFlashlightConfig.new()
+	var c := GSFlashlightConfig.new()
 	_check(c.validate().ok, "defaults validate")
-	var fs: Array = DotFlashlightConfig.profile_schemas()["flashlight"]["schema"]
+	var fs: Array = GSFlashlightConfig.profile_schemas()["flashlight"]["schema"]
 	var names: Array = fs.map(func(f: Dictionary) -> Variant: return f["name"])
 	_check(names.has("range_m") and names.has("allowed_maps") and names.size() == c.config_keys().size(), "profile_check finds the flashlight kind with every key", str(names.size()))
 	var rng: Dictionary = fs[names.find("range_m")]
@@ -45,36 +45,36 @@ func _config() -> void:
 	c.colour = "#ff0000"
 	_check(c.beam_colour() == Color.html("#ff0000"), "colour parses")
 	c.shadows_on_web = false
-	_check(c.local_shadows() == (c.shadows and not (DotPlatform.is_web() or DotPlatform.is_mobile())), "shadows follow the platform")
+	_check(c.local_shadows() == (c.shadows and not (GSPlatform.is_web() or GSPlatform.is_mobile())), "shadows follow the platform")
 	_sections += 1
 
 
 func _rules() -> void:
-	var c := DotFlashlightConfig.new()
-	_check(DotFlashlightRules.start_on(c, "m", 0.05), "dark ambient starts on by default")
-	_check(not DotFlashlightRules.start_on(c, "m", 0.8), "a bright map starts off")
-	_check(DotFlashlightRules.start_on(c, "m", 0.8, "interior_horror"), "a dark mood starts on though bright")
-	c.default_state = DotFlashlightConfig.START_ON
-	_check(DotFlashlightRules.start_on(c, "m", 0.9), "default on starts on anywhere")
-	c.default_state = DotFlashlightConfig.START_OFF
-	_check(not DotFlashlightRules.start_on(c, "m", 0.0), "default off starts off even when dark")
-	c.default_state = DotFlashlightConfig.START_ON
+	var c := GSFlashlightConfig.new()
+	_check(GSFlashlightRules.start_on(c, "m", 0.05), "dark ambient starts on by default")
+	_check(not GSFlashlightRules.start_on(c, "m", 0.8), "a bright map starts off")
+	_check(GSFlashlightRules.start_on(c, "m", 0.8, "interior_horror"), "a dark mood starts on though bright")
+	c.default_state = GSFlashlightConfig.START_ON
+	_check(GSFlashlightRules.start_on(c, "m", 0.9), "default on starts on anywhere")
+	c.default_state = GSFlashlightConfig.START_OFF
+	_check(not GSFlashlightRules.start_on(c, "m", 0.0), "default off starts off even when dark")
+	c.default_state = GSFlashlightConfig.START_ON
 	c.allowed_maps = PackedStringArray(["a"])
-	_check(DotFlashlightRules.allowed_on(c, "a") and not DotFlashlightRules.allowed_on(c, "b"), "allowed maps filter")
-	_check(not DotFlashlightRules.start_on(c, "b", 0.0), "a disallowed map never starts on")
+	_check(GSFlashlightRules.allowed_on(c, "a") and not GSFlashlightRules.allowed_on(c, "b"), "allowed maps filter")
+	_check(not GSFlashlightRules.start_on(c, "b", 0.0), "a disallowed map never starts on")
 	c.enabled = false
-	_check(not DotFlashlightRules.allowed_on(c, "a"), "disabled is allowed nowhere")
-	var near := DotFlashlightRules.nearest(PackedFloat32Array([5.0, 1.0, 3.0, 9.0]), 2)
+	_check(not GSFlashlightRules.allowed_on(c, "a"), "disabled is allowed nowhere")
+	var near := GSFlashlightRules.nearest(PackedFloat32Array([5.0, 1.0, 3.0, 9.0]), 2)
 	_check(near.size() == 2 and near[0] == 1 and near[1] == 2, "nearest picks the two smallest", str(near))
-	_check(DotFlashlightRules.nearest(PackedFloat32Array([1.0]), 0).is_empty(), "nearest of zero is none")
+	_check(GSFlashlightRules.nearest(PackedFloat32Array([1.0]), 0).is_empty(), "nearest of zero is none")
 	_sections += 1
 
 
-func _node(authoritative := true) -> DotFlashlight:
+func _node(authoritative := true) -> GSFlashlight:
 	var host := Node3D.new()
 	add_child(host)
-	var fl := DotFlashlight.new()
-	fl.config = DotFlashlightConfig.new()
+	var fl := GSFlashlight.new()
+	fl.config = GSFlashlightConfig.new()
 	fl.handle_input = false
 	fl.authoritative = authoritative
 	host.add_child(fl)
@@ -112,14 +112,14 @@ func _state() -> void:
 	_check(fl.beam.spot_range == 12.0, "refresh restyles the beam from a changed config")
 	var h := Node3D.new()
 	add_child(h)
-	var by_ref := DotFlashlight.new()
+	var by_ref := GSFlashlight.new()
 	by_ref.handle_input = false
-	by_ref.host = DotNodeRef.of_path(NodePath("../Eye"))
+	by_ref.host = GSNodeRef.of_path(NodePath("../Eye"))
 	var eye := Node3D.new()
 	eye.name = "Eye"
 	h.add_child(eye)
 	h.add_child(by_ref)
-	_check(by_ref.beam != null and by_ref.beam.get_parent() == eye, "the host is a DotNodeRef")
+	_check(by_ref.beam != null and by_ref.beam.get_parent() == eye, "the host is a GSNodeRef")
 	_sections += 1
 
 
@@ -138,10 +138,10 @@ func _battery() -> void:
 	for i in 2:
 		fl._process(1.0)
 	_check(is_equal_approx(fl.charge, 0.1) and fl.toggle(), "recharging reaches restart_charge, then it lights")
-	_check(DotFlashlightRules.flicker(fl.config, 0.5, 1.0) == 1.0, "a healthy battery does not flicker")
-	_check(DotFlashlightRules.flicker(fl.config, 0.05, 1.0) < 1.0, "a weak one does")
-	var c := DotFlashlightConfig.new()
-	_check(DotFlashlightRules.step_charge(c, 1.0, true, 100.0) == 1.0, "no battery never drains")
+	_check(GSFlashlightRules.flicker(fl.config, 0.5, 1.0) == 1.0, "a healthy battery does not flicker")
+	_check(GSFlashlightRules.flicker(fl.config, 0.05, 1.0) < 1.0, "a weak one does")
+	var c := GSFlashlightConfig.new()
+	_check(GSFlashlightRules.step_charge(c, 1.0, true, 100.0) == 1.0, "no battery never drains")
 	_sections += 1
 
 
@@ -186,7 +186,7 @@ func _replication() -> void:
 	fl.toggle()
 	_check(audio.played.size() == 2, "a muted flashlight is silent", str(audio.played))
 	fl.config.click_volume = 1.0
-	var crowd := DotFlashlightCrowd.new()
+	var crowd := GSFlashlightCrowd.new()
 	crowd.config = fl.config
 	crowd._audio = audio
 	add_child(crowd)
@@ -203,13 +203,13 @@ func _replication() -> void:
 
 
 func _crowd() -> void:
-	var c := DotFlashlightConfig.new()
+	var c := GSFlashlightConfig.new()
 	c.shadows = true
 	c.shadows_on_web = true
 	c.shadow_beams = 2
 	c.remote_beams = 5
 	c.remote_range = 50.0
-	var crowd := DotFlashlightCrowd.new()
+	var crowd := GSFlashlightCrowd.new()
 	crowd.config = c
 	add_child(crowd)
 	for i in 120:
@@ -236,7 +236,7 @@ func _crowd() -> void:
 	_check(crowd.describe()["drawn"] == 0, "beams past remote_range are not drawn")
 	crowd.set_viewer(Vector3.ZERO)
 	c.shadows_on_web = false
-	if DotPlatform.is_web():
+	if GSPlatform.is_web():
 		crowd.rank()
 		_check(crowd.describe()["shadowed"] == 0, "no shadows on the web by default")
 	else:
@@ -252,13 +252,13 @@ func _crowd() -> void:
 
 
 func _layers() -> void:
-	var c := DotFlashlightConfig.new()
+	var c := GSFlashlightConfig.new()
 	var applied := c.apply_dictionary({"range_m": 33.0, "battery": true, "allowed_maps": ["a", "b"], "shadow_beams": 7})
 	_check(applied.size() == 4 and c.range_m == 33.0 and c.battery and c.allowed_maps.size() == 2 and c.shadow_beams == 7, "a dictionary layer sets every type", str(applied))
 	c.apply_cli("--flashlight-")
-	var r := DotFlashlightConfig.from_files()
-	_check(r.ok and r.value is DotFlashlightConfig, "from_files returns a config")
-	_check((r.value as DotFlashlightConfig).describe().begins_with("flashlight"), "describe says what it is")
+	var r := GSFlashlightConfig.from_files()
+	_check(r.ok and r.value is GSFlashlightConfig, "from_files returns a config")
+	_check((r.value as GSFlashlightConfig).describe().begins_with("flashlight"), "describe says what it is")
 	_check(c.env_prefix() == "DOT_FLASHLIGHT_" and c.cli_prefix() == "--flashlight-", "env and command-line prefixes")
 	_sections += 1
 

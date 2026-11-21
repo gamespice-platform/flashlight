@@ -1,7 +1,7 @@
 extends RefCounted
 
-## GameSpice Flashlight's API level. The rule for bumping it is on [DotAddonApi].
+## GameSpice Flashlight's API level. The rule for bumping it is on [GSAddonApi].
 
-# 1: DotFlashlight, DotFlashlightConfig, DotFlashlightBeam, DotFlashlightCrowd, DotFlashlightRules.
+# 1: GSFlashlight, GSFlashlightConfig, GSFlashlightBeam, GSFlashlightCrowd, GSFlashlightRules.
 const LEVEL := 1
 const OLDEST := 1

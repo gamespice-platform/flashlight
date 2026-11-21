@@ -20,14 +20,14 @@ func _ready() -> void:
 	var cam := Camera3D.new()
 	cam.position = Vector3(0, 1.6, 0)
 	add_child(cam)
-	var fl := DotFlashlight.new()
+	var fl := GSFlashlight.new()
 	fl.handle_input = false
-	fl.config = DotFlashlightConfig.new()
+	fl.config = GSFlashlightConfig.new()
 	cam.add_child(fl)
 	fl.begin_map("demo", 0.05, "interior_horror")
 	cam.look_at(Vector3(-1, 1.0, -12))
 
-	var crowd := DotFlashlightCrowd.new()
+	var crowd := GSFlashlightCrowd.new()
 	crowd.config = fl.config
 	add_child(crowd)
 	crowd.set_viewer(cam.global_position)

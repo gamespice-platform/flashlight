@@ -5,8 +5,8 @@ extends EditorPlugin
 
 
 func _enter_tree() -> void:
-	add_custom_type("DotFlashlight", "Node", load("res://addons/dot_flashlight/runtime/dot_flashlight.gd"), null)
+	add_custom_type("GSFlashlight", "Node", load("res://addons/dot_flashlight/runtime/dot_flashlight.gd"), null)
 
 
 func _exit_tree() -> void:
-	remove_custom_type("DotFlashlight")
+	remove_custom_type("GSFlashlight")
