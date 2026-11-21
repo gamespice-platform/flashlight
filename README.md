@@ -6,8 +6,8 @@ GameSpice Lighting describes a world's lighting as a document. A flashlight is c
 
 ## Install
 
-1. Copy `addons/dot_flashlight/` and `addons/dot_core/` into your project.
-2. Enable dot-flashlight in *Project > Project Settings > Plugins*.
+1. Copy `addons/gs_flashlight/` and `addons/gs_core/` into your project.
+2. Enable gs-flashlight in *Project > Project Settings > Plugins*.
 
 ## Quick start
 
@@ -52,9 +52,9 @@ Every number is a field on `GSFlashlightConfig`. The values below are defaults, 
 | `key` | `F` | The default key. The input action is `flashlight`. |
 | `allowed_maps` | empty | Maps where the flashlight is allowed. |
 
-The config has more fields for the flicker, the restart charge, the dark-map rules and the click sounds. They are in `addons/dot_flashlight/core/dot_flashlight_config.gd`.
+The config has more fields for the flicker, the restart charge, the dark-map rules and the click sounds. They are in `addons/gs_flashlight/core/gs_flashlight_config.gd`.
 
-Layers, weakest first: the defaults, `cfg/addon/dot_flashlight/*.yml`, the game's files, the operator's files, `DOT_FLASHLIGHT_*` environment variables, then `--flashlight-*` flags. A game that wants cvars binds the config with GameSpice Game's `GSGameConfigBinder` (`profile_kind = "flashlight"`), which exposes every field as a cvar and a profile set.
+Layers, weakest first: the defaults, `cfg/addon/gs_flashlight/*.yml`, the game's files, the operator's files, `GS_FLASHLIGHT_*` environment variables, then `--flashlight-*` flags. A game that wants cvars binds the config with GameSpice Game's `GSGameConfigBinder` (`profile_kind = "flashlight"`), which exposes every field as a cvar and a profile set.
 
 ## Switch sounds
 

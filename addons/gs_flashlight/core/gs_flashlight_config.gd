@@ -1,9 +1,9 @@
 class_name GSFlashlightConfig
 extends GSConfig
 
-## Every tunable of a flashlight. Exposed like any config: a game binds it with GSGameConfigBinder (kind `flashlight`) for cvars and the workbench; `cfg/addon/dot_flashlight/*.yml`, `DOT_FLASHLIGHT_*` and `--flashlight-*` layer over these defaults.
+## Every tunable of a flashlight. Exposed like any config: a game binds it with GSGameConfigBinder (kind `flashlight`) for cvars and the workbench; `cfg/addon/gs_flashlight/*.yml`, `GS_FLASHLIGHT_*` and `--flashlight-*` layer over these defaults.
 
-const ADDON := "dot-flashlight"
+const ADDON := "gs-flashlight"
 const START_OFF := 0
 const START_ON := 1
 const START_DARK := 2
@@ -76,7 +76,7 @@ const START_DARK := 2
 
 
 func env_prefix() -> String:
-	return "DOT_FLASHLIGHT_"
+	return "GS_FLASHLIGHT_"
 
 
 func cli_prefix() -> String:
@@ -130,7 +130,7 @@ static func profile_schemas() -> Dictionary:
 	return {"flashlight": {"schema": schema(), "children": {}}}
 
 
-## Defaults, then `cfg/addon/dot_flashlight/*.yml` and the game tier, then environment and command line.
+## Defaults, then `cfg/addon/gs_flashlight/*.yml` and the game tier, then environment and command line.
 static func from_files() -> GSResult:
 	var cfg := GSFlashlightConfig.new()
 	var files := GSAddonConfig.load_dir(ADDON)

@@ -1,6 +1,6 @@
 extends Node3D
 
-## dot-flashlight's headless suite (res://examples/flashlight_selftest.tscn).
+## gs-flashlight's headless suite (res://examples/flashlight_selftest.tscn).
 ## Counts sections run to their last line as well as checks, because a script error
 ## aborts a section and not the run.
 
@@ -13,7 +13,7 @@ var _sections := 0
 
 
 func _ready() -> void:
-	print("dot-flashlight")
+	print("gs-flashlight")
 	_config()
 	_rules()
 	_state()
@@ -168,7 +168,7 @@ func _replication() -> void:
 	var fl := _node()
 	fl._audio = audio
 	fl.toggle()
-	_check(audio.played == [&"flashlight_on"], "the click plays through a dot-audio-shaped manager", str(audio.played))
+	_check(audio.played == [&"flashlight_on"], "the click plays through a gs-audio-shaped manager", str(audio.played))
 	audio.catalogue.ids.clear()
 	fl.toggle()
 	_check(audio.played == [&"flashlight_on"], "an id the catalogue lacks is not played", str(audio.played))
@@ -259,7 +259,7 @@ func _layers() -> void:
 	var r := GSFlashlightConfig.from_files()
 	_check(r.ok and r.value is GSFlashlightConfig, "from_files returns a config")
 	_check((r.value as GSFlashlightConfig).describe().begins_with("flashlight"), "describe says what it is")
-	_check(c.env_prefix() == "DOT_FLASHLIGHT_" and c.cli_prefix() == "--flashlight-", "env and command-line prefixes")
+	_check(c.env_prefix() == "GS_FLASHLIGHT_" and c.cli_prefix() == "--flashlight-", "env and command-line prefixes")
 	_sections += 1
 
 

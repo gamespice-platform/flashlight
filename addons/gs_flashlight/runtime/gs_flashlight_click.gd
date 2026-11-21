@@ -3,7 +3,7 @@ extends RefCounted
 
 ## The switch click, shared by the local light and the crowd: one place decides the id, the level and the jitter.
 
-## Plays the on or off click at [param at] through a dot-audio-shaped [param audio] (`play_at`, `catalogue.has`). Returns whether a sound was requested; silent for no audio, an empty id, an id the catalogue lacks, or a zero volume.
+## Plays the on or off click at [param at] through a gs-audio-shaped [param audio] (`play_at`, `catalogue.has`). Returns whether a sound was requested; silent for no audio, an empty id, an id the catalogue lacks, or a zero volume.
 static func play(audio: Object, config: GSFlashlightConfig, now_on: bool, at: Vector3) -> bool:
 	var id := StringName(config.click_on if now_on else config.click_off)
 	if audio == null or id == &"" or config.click_volume <= 0.0 or not audio.has_method("play_at"):

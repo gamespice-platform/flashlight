@@ -1,14 +1,14 @@
 # GameSpice Flashlight
 
-A player-carried, replicated spot light. Read the family [CLAUDE.md](../../CLAUDE.md) first. **The distributable is `addons/dot_flashlight/`**; it requires [GameSpice Core](../dot-core) only (`ln -s ../../dot-core/addons/dot_core addons/dot_core`, gitignored).
+A player-carried, replicated spot light. Read the family [CLAUDE.md](../../CLAUDE.md) first. **The distributable is `addons/gs_flashlight/`**; it requires [GameSpice Core](../gs-core) only (`ln -s ../../gs-core/addons/gs_core addons/gs_core`, gitignored).
 
 | Path | What |
 | --- | --- |
-| `core/dot_flashlight_config.gd` | `GSFlashlightConfig`: every tunable, `from_files()`, `local_shadows()` (platform rule) |
-| `core/dot_flashlight_rules.gd` | pure decisions: allowed map, dark map, start state, battery step, flicker, nearest N |
-| `runtime/dot_flashlight.gd` | `GSFlashlight`: state, battery, local beam, click; authoritative or a client that asks |
-| `runtime/dot_flashlight_crowd.gd` | `GSFlashlightCrowd`: everyone else's beams, ranked by distance |
-| `runtime/dot_flashlight_beam.gd` | the one place a beam is built and styled |
+| `core/gs_flashlight_config.gd` | `GSFlashlightConfig`: every tunable, `from_files()`, `local_shadows()` (platform rule) |
+| `core/gs_flashlight_rules.gd` | pure decisions: allowed map, dark map, start state, battery step, flicker, nearest N |
+| `runtime/gs_flashlight.gd` | `GSFlashlight`: state, battery, local beam, click; authoritative or a client that asks |
+| `runtime/gs_flashlight_crowd.gd` | `GSFlashlightCrowd`: everyone else's beams, ranked by distance |
+| `runtime/gs_flashlight_beam.gd` | the one place a beam is built and styled |
 | `examples/flashlight_selftest.tscn` | the suite (7 sections, 77 checks); `flashlight_demo.tscn` and `tools/screenshot.sh` render a frame |
 
 - **Clicks**: `GSFlashlightClick` plays the on/off pair in 3D (`click_volume` 0 is silent, `click_pitch_jitter`); the stock pair is GameSpice Audio's `flashlight_on/off`, replaceable by defining the same ids first.
