@@ -1,0 +1,11 @@
+# gd-perf
+# Baselines only shrink: scripts/<gate> --update lowers or drops entries and refuses to add.
+addons/gs_flashlight/core/gs_flashlight_config.gd::profile_schemas::untyped_array	1
+addons/gs_flashlight/core/gs_flashlight_config.gd::schema::untyped_array	2
+addons/gs_flashlight/core/gs_flashlight_rules.gd::nearest::untyped_array	1
+addons/gs_flashlight/runtime/gs_flashlight.gd::apply_state::untyped_array	1
+addons/gs_flashlight/runtime/gs_flashlight.gd::describe::untyped_array	1
+addons/gs_flashlight/runtime/gs_flashlight.gd::state::untyped_array	1
+addons/gs_flashlight/runtime/gs_flashlight_crowd.gd::<members>::untyped_array	4
+addons/gs_flashlight/runtime/gs_flashlight_crowd.gd::describe::untyped_array	1
+addons/gs_flashlight/runtime/gs_flashlight_crowd.gd::retain::untyped_array	1
